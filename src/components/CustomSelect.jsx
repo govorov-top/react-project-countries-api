@@ -19,8 +19,8 @@ export const CustomSelect = styled(Select).attrs({
       cursor: 'pointer',
       color: 'var(--colors-text)',
       backgroundColor: state.isSelected
-        ? 'var(--colors-bg)'
-        : 'var(--colors-ui-base)',
+          ? 'var(--colors-bg)'
+          : 'var(--colors-ui-base)',
     }),
   },
 })`
