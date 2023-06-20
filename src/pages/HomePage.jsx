@@ -3,17 +3,19 @@ import { useNavigate } from 'react-router-dom';
 import { List } from '../components/List';
 import { Card } from '../components/Card';
 import { Controls } from '../components/Controls';
-import {useDispatch, useSelector} from "react-redux";
+import {shallowEqual, useDispatch, useSelector} from "react-redux";
 import {useEffect} from "react";
-import {selectCountriesInfo} from "../store/countries/countries-selectors";
+import {selectCountriesInfo, selectVisibleCountries} from "../store/countries/countries-selectors";
 import {loadCountries} from "../store/countries/countries-actions";
+import {selectControls} from "../store/controls/controls-selectors";
 
 export const HomePage = () => {
     const navigate = useNavigate();
 
     const dispatch = useDispatch();
-    const {status, error, qty, list: countries} = useSelector(selectCountriesInfo);
-
+    const {search, region} = useSelector(selectControls);
+    const countries = useSelector(state => selectVisibleCountries(state, {search,region}), shallowEqual);
+    const {status, error, qty} = useSelector(selectCountriesInfo,shallowEqual);
     useEffect(() => {
         if (!qty)
             dispatch(loadCountries());
@@ -22,8 +24,9 @@ export const HomePage = () => {
     return (
         <>
             <Controls />
-            {error && <h2>Can't fetch data</h2>}
+            {!countries.length && status === 'received' &&<h2>Not found...</h2>}
             {status === 'loading' && <h2>Loading...</h2>}
+            {error && <h2>Can't fetch data</h2>}
             {status === 'received' && (<List>
                 {countries.map((c) => {
                     const countryInfo = {

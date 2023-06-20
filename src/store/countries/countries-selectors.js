@@ -1,13 +1,11 @@
-import { createSelector } from 'reselect';
+export const selectCountriesInfo = state => ({
+    status: state.countries.status,
+    error: state.countries.error,
+    qty: state.countries.qty,
+});
 
-const selectCountries = state => state.countries;
-
-export const selectCountriesInfo = createSelector(
-    selectCountries,
-    countries => ({
-        status: countries.status,
-        error: countries.error,
-        qty: countries.qty,
-        list: countries.list
-    })
-);
+export const selectVisibleCountries = (state, {search = '', region = ''}) =>
+    state.countries.list.filter(
+        country => country.name.toLowerCase().includes(search.toLowerCase())
+        && country.region.includes(region)
+    );
